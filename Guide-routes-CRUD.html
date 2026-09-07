@@ -1,0 +1,601 @@
+<title>Routes CRUD des activités</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700&family=IBM+Plex+Mono:wght@400;600&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+  :root {
+    --ground: #EEF1F0;
+    --surface: #FFFFFF;
+    --surface-2: #F6F8F7;
+    --ink: #131C1A;
+    --ink-soft: #4B5A56;
+    --ink-faint: #77857F;
+    --rule: #D5DCD9;
+    --rule-soft: #E4E9E7;
+    --accent: #0E6A5E;
+    --get: #2C7A55;
+    --post: #A8620B;
+    --put: #21558F;
+    --delete: #A8332A;
+    --get-bg: #E4F0E9;
+    --post-bg: #F6EADA;
+    --put-bg: #E2EBF5;
+    --delete-bg: #F6E4E2;
+    --code-bg: #10201D;
+    --code-ink: #DDE8E4;
+    --code-faint: #7E9791;
+    --code-str: #A8D3B4;
+    --warn-bg: #FBF0DC;
+    --warn-rule: #E0BE7C;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --ground: #0D1513;
+      --surface: #141F1D;
+      --surface-2: #1A2624;
+      --ink: #E8EFEC;
+      --ink-soft: #A7B7B2;
+      --ink-faint: #7D8D88;
+      --rule: #2A3735;
+      --rule-soft: #212D2B;
+      --accent: #4FC4AE;
+      --get: #6DC08E;
+      --post: #E0A55C;
+      --put: #7FB1E8;
+      --delete: #E58A80;
+      --get-bg: #172E23;
+      --post-bg: #33260F;
+      --put-bg: #16283C;
+      --delete-bg: #331B18;
+      --code-bg: #08110F;
+      --code-ink: #DDE8E4;
+      --code-faint: #6F8681;
+      --code-str: #9CCBA9;
+      --warn-bg: #2B2413;
+      --warn-rule: #6B5A31;
+    }
+  }
+  :root[data-theme="dark"] {
+    --ground: #0D1513;
+    --surface: #141F1D;
+    --surface-2: #1A2624;
+    --ink: #E8EFEC;
+    --ink-soft: #A7B7B2;
+    --ink-faint: #7D8D88;
+    --rule: #2A3735;
+    --rule-soft: #212D2B;
+    --accent: #4FC4AE;
+    --get: #6DC08E;
+    --post: #E0A55C;
+    --put: #7FB1E8;
+    --delete: #E58A80;
+    --get-bg: #172E23;
+    --post-bg: #33260F;
+    --put-bg: #16283C;
+    --delete-bg: #331B18;
+    --code-bg: #08110F;
+    --code-ink: #DDE8E4;
+    --code-faint: #6F8681;
+    --code-str: #9CCBA9;
+    --warn-bg: #2B2413;
+    --warn-rule: #6B5A31;
+  }
+
+  body {
+    background: var(--ground);
+    color: var(--ink);
+    font-family: "IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 860px;
+    margin: 0 auto;
+    padding: 48px 24px 96px;
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+  }
+
+  h1, h2, h3 {
+    font-family: "Bricolage Grotesque", "IBM Plex Sans", sans-serif;
+    text-wrap: balance;
+    margin: 0;
+    line-height: 1.15;
+  }
+
+  /* ---------- en-tête ---------- */
+  .masthead {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    border-bottom: 2px solid var(--ink);
+    padding-bottom: 24px;
+  }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--accent);
+  }
+  h1 { font-size: clamp(32px, 6vw, 46px); font-weight: 700; letter-spacing: -0.02em; }
+  .lede { color: var(--ink-soft); max-width: 62ch; font-size: 17px; }
+
+  /* ---------- circuit ---------- */
+  .flow {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: stretch;
+    gap: 8px;
+  }
+  .flow-step {
+    flex: 1 1 120px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+  }
+  .flow-step b {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13px;
+    font-weight: 600;
+  }
+  .flow-step span { font-size: 13px; color: var(--ink-faint); line-height: 1.4; }
+
+  section > h2 {
+    font-size: 13px;
+    font-weight: 500;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    color: var(--ink-faint);
+    margin-bottom: 18px;
+  }
+  .section-body { display: flex; flex-direction: column; gap: 18px; }
+
+  /* ---------- tableau des verbes ---------- */
+  .table-scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; min-width: 520px; }
+  th {
+    text-align: left;
+    font-weight: 600;
+    font-size: 12px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding: 0 14px 8px 0;
+    border-bottom: 1px solid var(--rule);
+  }
+  td { padding: 11px 14px 11px 0; border-bottom: 1px solid var(--rule-soft); vertical-align: top; color: var(--ink-soft); }
+  td:first-child { padding-right: 18px; }
+  td code, th code { font-size: 13px; }
+
+  .verb {
+    display: inline-block;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    letter-spacing: 0.06em;
+    padding: 3px 8px;
+    border-radius: 3px;
+    white-space: nowrap;
+  }
+  .verb.get { color: var(--get); background: var(--get-bg); }
+  .verb.post { color: var(--post); background: var(--post-bg); }
+  .verb.put { color: var(--put); background: var(--put-bg); }
+  .verb.delete { color: var(--delete); background: var(--delete-bg); }
+
+  /* ---------- fiches ---------- */
+  .fiche {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-top: 3px solid var(--accent);
+    display: flex;
+    flex-direction: column;
+  }
+  .fiche.post { border-top-color: var(--post); }
+  .fiche.put { border-top-color: var(--put); }
+  .fiche.delete { border-top-color: var(--delete); }
+
+  .fiche-head {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 10px 14px;
+    padding: 20px 24px 16px;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  .fiche-head h3 { font-size: 22px; font-weight: 700; }
+  .route {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13px;
+    color: var(--ink-faint);
+  }
+  .fiche-role {
+    padding: 16px 24px;
+    color: var(--ink-soft);
+    border-bottom: 1px solid var(--rule-soft);
+    max-width: 66ch;
+  }
+  .fiche-body { padding: 22px 24px 26px; display: flex; flex-direction: column; gap: 22px; }
+
+  .block-label {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+  }
+
+  ol.steps { margin: 0; padding: 0; list-style: none; counter-reset: s; display: flex; flex-direction: column; gap: 10px; }
+  ol.steps li {
+    counter-increment: s;
+    display: grid;
+    grid-template-columns: 26px 1fr;
+    gap: 12px;
+    align-items: start;
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  ol.steps li::before {
+    content: counter(s);
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--surface-2);
+    border: 1px solid var(--rule);
+    width: 24px;
+    height: 24px;
+    display: grid;
+    place-items: center;
+    margin-top: 1px;
+  }
+  ol.steps b { color: var(--ink); font-weight: 600; }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    padding: 18px 20px;
+    margin: 0;
+    overflow-x: auto;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 13.5px;
+    line-height: 1.65;
+    border-radius: 2px;
+  }
+  pre .c { color: var(--code-faint); }
+  pre .s { color: var(--code-str); }
+  code {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.9em;
+    background: var(--surface-2);
+    border: 1px solid var(--rule-soft);
+    padding: 1px 5px;
+    border-radius: 3px;
+  }
+  td code, .fiche-role code, ol.steps code, li code { background: var(--surface-2); }
+
+  .postman { background: var(--surface-2); border: 1px solid var(--rule-soft); padding: 18px 20px; }
+
+  .status {
+    display: inline-flex;
+    align-items: baseline;
+    gap: 8px;
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--get);
+  }
+
+  /* ---------- erreurs ---------- */
+  .errors { display: flex; flex-direction: column; gap: 14px; }
+  .error {
+    display: grid;
+    grid-template-columns: minmax(0, 34%) minmax(0, 1fr);
+    gap: 4px 20px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--delete);
+    padding: 14px 18px;
+  }
+  .error .sym { font-weight: 600; font-size: 15px; }
+  .error .fix { color: var(--ink-soft); font-size: 15px; }
+  @media (max-width: 620px) {
+    .error { grid-template-columns: 1fr; }
+    .error .fix { padding-top: 4px; }
+  }
+
+  .note {
+    background: var(--warn-bg);
+    border: 1px solid var(--warn-rule);
+    padding: 16px 20px;
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .note b { color: var(--ink); }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 20px;
+    font-size: 14px;
+    color: var(--ink-faint);
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  a { color: var(--accent); }
+  :focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="eyebrow">ICT-295 · Backend d'une application</div>
+    <h1>Routes CRUD des activités</h1>
+    <p class="lede">Les quatre opérations de l'API, chacune avec les étapes du code et la marche à suivre dans Postman. Serveur Express 5, données en mémoire dans un tableau, port 3000.</p>
+  </header>
+
+  <section>
+    <h2>Le circuit d'une requête</h2>
+    <div class="flow">
+      <div class="flow-step"><b>Postman</b><span>envoie la méthode, l'URL et parfois un body</span></div>
+      <div class="flow-step"><b>app.js</b><span>lit le JSON puis oriente vers le routeur</span></div>
+      <div class="flow-step"><b>activities.js</b><span>trouve la route qui correspond</span></div>
+      <div class="flow-step"><b>le tableau</b><span>lecture, ajout, remplacement ou suppression</span></div>
+      <div class="flow-step"><b>res.json()</b><span>renvoie la réponse et termine</span></div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Où voyagent les données</h2>
+    <div class="section-body">
+      <div class="table-scroll">
+        <table>
+          <thead>
+            <tr><th>Méthode</th><th>Rôle</th><th>Id dans l'URL</th><th>Body</th></tr>
+          </thead>
+          <tbody>
+            <tr><td><span class="verb get">GET</span></td><td>Lire</td><td>Seulement pour une activité précise</td><td>Aucun</td></tr>
+            <tr><td><span class="verb post">POST</span></td><td>Créer</td><td>Non, le serveur choisit l'id</td><td>Obligatoire</td></tr>
+            <tr><td><span class="verb put">PUT</span></td><td>Modifier</td><td>Oui</td><td>Obligatoire</td></tr>
+            <tr><td><span class="verb delete">DELETE</span></td><td>Supprimer</td><td>Oui</td><td>Aucun</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p style="color:var(--ink-soft);max-width:66ch;">Une règle simple pour s'en souvenir. L'URL sert à désigner <em>quelle</em> activité. Le body sert à transporter son <em>contenu</em>. Une activité entière ne tiendrait pas proprement dans une adresse, d'où le body.</p>
+    </div>
+  </section>
+
+  <!-- ============ POST ============ -->
+  <section>
+    <h2>Créer</h2>
+    <article class="fiche post">
+      <div class="fiche-head">
+        <span class="verb post">POST</span>
+        <h3>Ajouter une activité</h3>
+        <span class="route">/api/activities</span>
+      </div>
+      <p class="fiche-role">Le client envoie une activité sans id. Le serveur lui en attribue un, l'ajoute au tableau, et renvoie l'activité complète pour que le client découvre son id.</p>
+      <div class="fiche-body">
+
+        <div>
+          <div class="block-label">Étapes du code</div>
+          <ol class="steps">
+            <li><span><b>Lire le body.</b> La déstructuration sort les trois champs de <code>req.body</code> en une ligne.</span></li>
+            <li><span><b>Calculer l'id.</b> On prend le plus grand id existant et on ajoute 1.</span></li>
+            <li><span><b>Construire l'objet</b> en assemblant l'id et les trois champs reçus.</span></li>
+            <li><span><b>Ajouter au tableau</b> avec <code>push()</code>, qui place l'élément à la fin.</span></li>
+            <li><span><b>Répondre</b> avec un message et l'activité créée.</span></li>
+          </ol>
+        </div>
+
+        <div>
+          <div class="block-label">Le code</div>
+<pre><code>activitiesRouter.post(<span class="s">'/'</span>, (req, res) => {
+    <span class="c">// 1. les données envoyées par le client</span>
+    const { name, startDate, duration } = req.body;
+
+    <span class="c">// 2. le prochain id libre</span>
+    const id = Math.max(...activities.map(activity => activity.id)) + <span class="s">1</span>;
+
+    <span class="c">// 3. et 4. on construit puis on ajoute</span>
+    const newActivity = { id, name, startDate, duration };
+    activities.push(newActivity);
+
+    <span class="c">// 5. on répond</span>
+    const message = <span class="s">`L'activité ${newActivity.name} a bien été créée !`</span>;
+    res.json({ message: message, activity: newActivity });
+});</code></pre>
+        </div>
+
+        <div class="note"><b>Pourquoi pas <code>activities.length + 1</code> ?</b> Parce que supprimer une activité au milieu fait retomber la longueur, et le prochain ajout recréerait un id déjà utilisé. Deux activités porteraient le même numéro. C'est exactement le point que la consigne demande de traiter.</div>
+
+        <div class="postman">
+          <div class="block-label">Test dans Postman</div>
+          <ol class="steps">
+            <li><span>Méthode <b>POST</b>, URL <code>http://localhost:3000/api/activities</code>, sans id à la fin.</span></li>
+            <li><span>Onglet <b>Body</b>, bouton <b>raw</b>, puis le menu de droite sur <b>JSON</b> à la place de Text.</span></li>
+            <li><span>Coller l'activité, sur une seule ligne pour éviter les accolades ajoutées automatiquement :<br><code>{"name": "Cours de guitare", "startDate": "2026-10-01", "duration": 75}</code></span></li>
+            <li><span>Send. <span class="status">200 OK</span> et la réponse contient le nouvel id.</span></li>
+            <li><span>Vérifier avec un GET sur la liste complète, la nouvelle activité est à la fin.</span></li>
+          </ol>
+        </div>
+
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ PUT ============ -->
+  <section>
+    <h2>Modifier</h2>
+    <article class="fiche put">
+      <div class="fiche-head">
+        <span class="verb put">PUT</span>
+        <h3>Mettre à jour une activité</h3>
+        <span class="route">/api/activities/:id</span>
+      </div>
+      <p class="fiche-role">Un mélange des deux autres routes. L'id de l'activité visée vient de l'URL, comme pour le DELETE. Les nouvelles valeurs viennent du body, comme pour le POST.</p>
+      <div class="fiche-body">
+
+        <div>
+          <div class="block-label">Étapes du code</div>
+          <ol class="steps">
+            <li><span><b>Lire l'id dans l'URL</b> et le convertir en nombre, car <code>req.params.id</code> est du texte.</span></li>
+            <li><span><b>Lire les nouvelles valeurs</b> dans le body.</span></li>
+            <li><span><b>Trouver la position</b> avec <code>findIndex()</code>, car on doit écrire dans la case du tableau.</span></li>
+            <li><span><b>Remplacer</b> l'ancienne activité, en gardant le même id.</span></li>
+            <li><span><b>Répondre</b> avec l'activité telle qu'elle est maintenant.</span></li>
+          </ol>
+        </div>
+
+        <div>
+          <div class="block-label">Le code</div>
+<pre><code>activitiesRouter.put(<span class="s">'/:id'</span>, (req, res) => {
+    <span class="c">// 1. et 2. l'id vient de l'URL, le contenu vient du body</span>
+    const id = parseInt(req.params.id);
+    const { name, startDate, duration } = req.body;
+
+    <span class="c">// 3. la position dans le tableau</span>
+    const index = activities.findIndex(activity => activity.id === id);
+
+    <span class="c">// 4. on remplace, en réutilisant le même id</span>
+    activities[index] = { id, name, startDate, duration };
+
+    <span class="c">// 5. on répond</span>
+    const message = <span class="s">`L'activité ${activities[index].name} a bien été modifiée !`</span>;
+    res.json({ message: message, activity: activities[index] });
+});</code></pre>
+        </div>
+
+        <div class="note"><b>Garder le même id.</b> Si l'id venait du body, le client pourrait changer l'identité de l'activité en la modifiant. On reprend donc toujours celui de l'URL.</div>
+
+        <div class="postman">
+          <div class="block-label">Test dans Postman</div>
+          <ol class="steps">
+            <li><span>Méthode <b>PUT</b>, URL <code>http://localhost:3000/api/activities/2</code>, avec l'id cette fois.</span></li>
+            <li><span>Body en <b>raw</b> et <b>JSON</b>, comme pour le POST.</span></li>
+            <li><span>Envoyer l'activité complète, pas seulement le champ modifié :<br><code>{"name": "Atelier peinture modifie", "startDate": "2026-09-05", "duration": 100}</code></span></li>
+            <li><span>Send. <span class="status">200 OK</span> et la réponse montre l'activité 2 avec ses nouvelles valeurs.</span></li>
+          </ol>
+        </div>
+
+      </div>
+    </article>
+  </section>
+
+  <!-- ============ DELETE ============ -->
+  <section>
+    <h2>Supprimer</h2>
+    <article class="fiche delete">
+      <div class="fiche-head">
+        <span class="verb delete">DELETE</span>
+        <h3>Supprimer une activité</h3>
+        <span class="route">/api/activities/:id</span>
+      </div>
+      <p class="fiche-role">La route la plus courte. Rien à envoyer, tout tient dans l'URL. Le serveur retire l'élément du tableau et confirme.</p>
+      <div class="fiche-body">
+
+        <div>
+          <div class="block-label">Étapes du code</div>
+          <ol class="steps">
+            <li><span><b>Lire l'id dans l'URL</b> et le convertir en nombre.</span></li>
+            <li><span><b>Trouver la position</b> de l'activité avec <code>findIndex()</code>.</span></li>
+            <li><span><b>Supprimer</b> avec <code>splice(index, 1)</code>, qui retire un élément à cette position.</span></li>
+            <li><span><b>Répondre</b> par un message de confirmation.</span></li>
+          </ol>
+        </div>
+
+        <div>
+          <div class="block-label">Le code</div>
+<pre><code>activitiesRouter.delete(<span class="s">'/:id'</span>, (req, res) => {
+    <span class="c">// 1. l'id vient de l'URL</span>
+    const id = parseInt(req.params.id);
+
+    <span class="c">// 2. sa position dans le tableau</span>
+    const index = activities.findIndex(activity => activity.id === id);
+
+    <span class="c">// 3. supprimer 1 élément à partir de cette position</span>
+    activities.splice(index, <span class="s">1</span>);
+
+    <span class="c">// 4. on répond</span>
+    res.json({ message: <span class="s">'Activité supprimée'</span> });
+});</code></pre>
+        </div>
+
+        <div class="postman">
+          <div class="block-label">Test dans Postman</div>
+          <ol class="steps">
+            <li><span>Méthode <b>DELETE</b>, URL <code>http://localhost:3000/api/activities/2</code>.</span></li>
+            <li><span>Body sur <b>none</b>, il n'y a rien à envoyer.</span></li>
+            <li><span>Send. <span class="status">200 OK</span> et le message de suppression.</span></li>
+            <li><span>Vérifier avec un GET, il reste une activité de moins.</span></li>
+          </ol>
+        </div>
+
+      </div>
+    </article>
+  </section>
+
+  <section>
+    <h2>Les deux méthodes à ne pas confondre</h2>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr><th>Méthode</th><th>Retourne</th><th>Exemple pour l'id 2</th><th>Utilisée dans</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>find()</code></td>
+            <td>L'objet lui-même</td>
+            <td><code>{ id: 2, name: "Atelier peinture", ... }</code></td>
+            <td>GET par id</td>
+          </tr>
+          <tr>
+            <td><code>findIndex()</code></td>
+            <td>La position, à partir de 0</td>
+            <td><code>1</code></td>
+            <td>PUT et DELETE</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p style="color:var(--ink-soft);max-width:66ch;margin-top:14px;">Le PUT et le DELETE ont besoin de la position, parce qu'écrire dans une case ou en retirer une demande de savoir <em>où</em> elle se trouve. Le GET veut juste le contenu.</p>
+  </section>
+
+  <section>
+    <h2>Erreurs rencontrées et leur cause</h2>
+    <div class="errors">
+      <div class="error">
+        <div class="sym">500, avec <code>Cannot destructure property 'name' of 'req.body'</code></div>
+        <div class="fix">Le Body est vide. En Express 5, une requête sans body donne <code>req.body</code> non défini, et la déstructuration plante. Coller le JSON dans la zone Body.</div>
+      </div>
+      <div class="error">
+        <div class="sym">Une page HTML disant <code>Cannot POST /...</code></div>
+        <div class="fix">Express n'a pas trouvé la route. L'URL a une faute, ou il manque <code>/api</code> au début.</div>
+      </div>
+      <div class="error">
+        <div class="sym">Une activité créée avec des champs vides</div>
+        <div class="fix">Le menu du Body est resté sur <b>Text</b> au lieu de <b>JSON</b>. Le serveur reçoit du texte brut et ne trouve aucun champ.</div>
+      </div>
+      <div class="error">
+        <div class="sym">Les modifications disparaissent toutes seules</div>
+        <div class="fix">Comportement normal. Le tableau vit en mémoire, donc chaque redémarrage de nodemon, déclenché par une sauvegarde de fichier, remet les données de départ.</div>
+      </div>
+      <div class="error">
+        <div class="sym">Un id qui n'existe pas donne un résultat étrange</div>
+        <div class="fix"><code>findIndex()</code> retourne alors -1. Le DELETE supprime le dernier élément et le PUT écrit hors du tableau. La gestion d'erreur n'est pas demandée dans l'exercice, mais c'est la question piège classique.</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <div>Fichiers concernés : <code>API/app.js</code>, <code>API/routes/activities.js</code>, <code>API/db/mock-activities.js</code>.</div>
+    <div>Démarrage du serveur : <code>npm start</code> dans le dossier <code>API</code>, puis <code>http://localhost:3000</code>.</div>
+  </footer>
+
+</div>

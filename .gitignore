@@ -1,0 +1,23 @@
+# Dependances installees par npm : elles se reinstallent avec "npm install"
+node_modules/
+
+# Fichier contenant le mot de passe MySQL : ne doit JAMAIS partir sur GitHub
+.env
+
+# Exercice 5 (base de donnees) : pas encore publie
+API/db/connection.js
+API/db/schema.sql
+API/db/requetes.sql
+
+# Fichiers de configuration de l'IDE
+.idea/
+*.iml
+
+# Windows / Mac
+Thumbs.db
+.DS_Store
+
+# Documents de cours fournis par le prof (pas notre travail)
+*.pdf
+*.docx
+*.pptx
