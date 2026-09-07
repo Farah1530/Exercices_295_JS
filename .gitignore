@@ -4,10 +4,9 @@ node_modules/
 # Fichier contenant le mot de passe MySQL : ne doit JAMAIS partir sur GitHub
 .env
 
-# Exercice 5 (base de donnees) : pas encore publie
-API/db/connection.js
-API/db/schema.sql
-API/db/requetes.sql
+# Note : les fichiers de l'exercice 5 (connection.js, schema.sql, requetes.sql)
+# sont versionnes sur cette branche. Seul .env, qui contient le mot de passe,
+# reste ignore.
 
 # Fichiers de configuration de l'IDE
 .idea/
