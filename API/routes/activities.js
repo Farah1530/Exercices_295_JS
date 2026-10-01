@@ -148,7 +148,12 @@ activitiesRouter.post('/', async (req, res) => {
     try {
         // Les donnees envoyees par le client (le Body dans Postman) sont dans req.body
         // On en sort les 3 valeurs d'un coup (destructuration)
-        const { name, startDate, duration } = req.body;
+        // Si le client n'envoie aucun body du tout, req.body vaut undefined,
+        // et sortir 3 valeurs de "undefined" ferait planter la route (erreur 500).
+        // "|| {}" veut dire : si req.body n'existe pas, on utilise un objet vide a la place.
+        // Les 3 valeurs sont alors undefined, et la verification juste en dessous
+        // renvoie proprement une erreur 400.
+        const { name, startDate, duration } = req.body || {};
 
         // Le nom, la date et la duree ne doivent pas etre vides.
         // Les || veulent dire "OU" : il suffit qu'UN seul champ soit vide pour refuser.
@@ -188,7 +193,12 @@ activitiesRouter.put('/:id', async (req, res) => {
         }
 
         // Les nouvelles valeurs viennent du Body
-        const { name, startDate, duration } = req.body;
+        // Si le client n'envoie aucun body du tout, req.body vaut undefined,
+        // et sortir 3 valeurs de "undefined" ferait planter la route (erreur 500).
+        // "|| {}" veut dire : si req.body n'existe pas, on utilise un objet vide a la place.
+        // Les 3 valeurs sont alors undefined, et la verification juste en dessous
+        // renvoie proprement une erreur 400.
+        const { name, startDate, duration } = req.body || {};
 
         // Memes verifications que pour le POST.
         // Le nom, la date et la duree ne doivent pas etre vides.
