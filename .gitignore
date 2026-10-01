@@ -20,3 +20,7 @@ Thumbs.db
 *.pdf
 *.docx
 *.pptx
+
+# Exemple "Contacts" fourni par la prof : ce travail n'est pas le notre,
+# et ce dossier contient son propre depot git
+API/295_exempleContacts/

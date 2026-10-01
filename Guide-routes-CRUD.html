@@ -260,13 +260,19 @@
   pre {
     background: var(--code-bg);
     color: var(--code-ink);
-    padding: 18px 20px;
+    padding: 18px 20px 18px 36px;
     margin: 0;
-    overflow-x: auto;
     font-family: "IBM Plex Mono", ui-monospace, monospace;
     font-size: 13.5px;
     line-height: 1.65;
     border-radius: 2px;
+    /* les lignes trop longues reviennent a la ligne au lieu de depasser */
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    text-indent: -16px;
+  }
+  @media (max-width: 480px) {
+    pre { font-size: 12.5px; }
   }
   pre .c { color: var(--code-faint); }
   pre .s { color: var(--code-str); }

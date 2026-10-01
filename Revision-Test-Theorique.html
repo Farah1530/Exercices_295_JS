@@ -1,0 +1,875 @@
+<title>Révision ICT295</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=JetBrains+Mono:wght@400;600&family=Public+Sans:wght@400;500;600;700&display=swap">
+<style>
+  :root {
+    --paper: #E9EBF1;
+    --surface: #FFFFFF;
+    --surface-2: #F3F5F9;
+    --ink: #15171F;
+    --ink-soft: #474D5E;
+    --ink-faint: #757B8C;
+    --rule: #D2D7E2;
+    --rule-soft: #E3E7EF;
+    --pen: #343B87;
+    --pen-soft: #E6E8F6;
+    --marker: #F7DE6B;
+    --marker-ink: #15171F;
+    --red: #A8323F;
+    --code-bg: #141824;
+    --code-ink: #DFE4F0;
+    --code-faint: #7E88A3;
+    --code-str: #A9C9A0;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0E1017;
+      --surface: #171A24;
+      --surface-2: #1D2130;
+      --ink: #E7EAF2;
+      --ink-soft: #A8AEC0;
+      --ink-faint: #7B8296;
+      --rule: #2C3244;
+      --rule-soft: #232838;
+      --pen: #949CE8;
+      --pen-soft: #1F2440;
+      --marker: rgba(228, 190, 74, 0.32);
+      --marker-ink: #F6E9BD;
+      --red: #E58893;
+      --code-bg: #0A0D15;
+      --code-ink: #DFE4F0;
+      --code-faint: #737C96;
+      --code-str: #9FC096;
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0E1017;
+    --surface: #171A24;
+    --surface-2: #1D2130;
+    --ink: #E7EAF2;
+    --ink-soft: #A8AEC0;
+    --ink-faint: #7B8296;
+    --rule: #2C3244;
+    --rule-soft: #232838;
+    --pen: #949CE8;
+    --pen-soft: #1F2440;
+    --marker: rgba(228, 190, 74, 0.32);
+    --marker-ink: #F6E9BD;
+    --red: #E58893;
+    --code-bg: #0A0D15;
+    --code-ink: #DFE4F0;
+    --code-faint: #737C96;
+    --code-str: #9FC096;
+  }
+
+  body {
+    background: var(--paper);
+    color: var(--ink);
+    font-family: "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+    font-size: 16px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .wrap {
+    max-width: 840px;
+    margin: 0 auto;
+    padding: 44px 22px 88px;
+    display: flex;
+    flex-direction: column;
+    gap: 52px;
+  }
+
+  h1, h2, h3 { margin: 0; text-wrap: balance; line-height: 1.16; }
+
+  .masthead { display: flex; flex-direction: column; gap: 16px; }
+  .exam-line {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px 16px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--pen);
+  }
+  .exam-line span { white-space: nowrap; }
+  h1 {
+    font-family: "Instrument Serif", Georgia, serif;
+    font-size: clamp(40px, 8vw, 62px);
+    font-weight: 400;
+    letter-spacing: -0.01em;
+  }
+  .lede { color: var(--ink-soft); max-width: 60ch; font-size: 17px; }
+  .masthead .rule { height: 2px; background: var(--ink); }
+
+  mark {
+    background: linear-gradient(transparent 58%, var(--marker) 58%);
+    color: var(--marker-ink);
+    padding: 0 1px;
+  }
+
+  .obj { display: flex; flex-direction: column; gap: 20px; }
+  .obj-head {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    gap: 18px;
+    align-items: baseline;
+    border-bottom: 1px solid var(--rule);
+    padding-bottom: 12px;
+  }
+  .obj-num {
+    font-family: "Instrument Serif", Georgia, serif;
+    font-size: 40px;
+    line-height: 1;
+    color: var(--pen);
+  }
+  .obj-head h2 { font-size: 24px; font-weight: 600; letter-spacing: -0.01em; }
+  .obj-head .tag {
+    display: block;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 6px;
+  }
+
+  .obj-body { display: flex; flex-direction: column; gap: 20px; }
+  .obj-body p { margin: 0; max-width: 66ch; }
+  h3 {
+    font-size: 12px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-weight: 600;
+    letter-spacing: 0.11em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+  .sub { display: flex; flex-direction: column; gap: 10px; }
+
+  dl.defs { margin: 0; display: flex; flex-direction: column; gap: 0; }
+  dl.defs > div {
+    display: grid;
+    grid-template-columns: minmax(0, 190px) minmax(0, 1fr);
+    gap: 4px 22px;
+    padding: 11px 0;
+    border-bottom: 1px solid var(--rule-soft);
+  }
+  dl.defs dt { font-weight: 600; color: var(--ink); }
+  dl.defs dd { margin: 0; color: var(--ink-soft); }
+  dl.defs dt code { font-size: 0.88em; }
+  @media (max-width: 600px) {
+    dl.defs > div { grid-template-columns: 1fr; }
+  }
+
+  .scroll { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: 15px; min-width: 460px; }
+  th {
+    text-align: left;
+    font-size: 11px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-weight: 600;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    padding: 0 16px 9px 0;
+    border-bottom: 1px solid var(--rule);
+    vertical-align: bottom;
+  }
+  td {
+    padding: 10px 16px 10px 0;
+    border-bottom: 1px solid var(--rule-soft);
+    color: var(--ink-soft);
+    vertical-align: top;
+  }
+  td strong { color: var(--ink); font-weight: 600; }
+
+  pre {
+    background: var(--code-bg);
+    color: var(--code-ink);
+    margin: 0;
+    padding: 16px 18px 16px 34px;
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 13px;
+    line-height: 1.66;
+    white-space: pre-wrap;
+    overflow-wrap: break-word;
+    text-indent: -16px;
+  }
+  @media (max-width: 480px) { pre { font-size: 12px; } }
+  pre .c { color: var(--code-faint); }
+  pre .s { color: var(--code-str); }
+  code {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 0.87em;
+    background: var(--surface-2);
+    border: 1px solid var(--rule-soft);
+    padding: 1px 5px;
+    border-radius: 3px;
+    word-break: break-word;
+  }
+
+  .cycle { display: flex; flex-wrap: wrap; align-items: stretch; gap: 8px; }
+  .cycle-step {
+    flex: 1 1 130px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+  }
+  .cycle-step b { font-size: 14px; }
+  .cycle-step span { font-size: 12.5px; color: var(--ink-faint); line-height: 1.45; }
+  .cycle-step em {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-style: normal;
+    font-size: 10.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--pen);
+  }
+
+  .keep {
+    background: var(--pen-soft);
+    border-left: 3px solid var(--pen);
+    padding: 14px 18px;
+    font-size: 15px;
+    color: var(--ink-soft);
+  }
+  .keep b { color: var(--ink); }
+
+  .cards { display: flex; flex-direction: column; gap: 8px; }
+  details { background: var(--surface); border: 1px solid var(--rule); }
+  details[open] { border-color: var(--pen); }
+  summary {
+    cursor: pointer;
+    padding: 13px 18px;
+    font-weight: 600;
+    list-style: none;
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    gap: 16px;
+  }
+  summary::-webkit-details-marker { display: none; }
+  summary::after {
+    content: "réponse";
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    font-size: 10.5px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--pen);
+    font-weight: 600;
+    white-space: nowrap;
+  }
+  details[open] summary::after { content: "×"; font-size: 15px; letter-spacing: 0; }
+  details .answer {
+    padding: 13px 18px 15px;
+    color: var(--ink-soft);
+    font-size: 15px;
+    border-top: 1px solid var(--rule-soft);
+  }
+  details .answer code { font-size: 0.85em; }
+
+  .traps { display: flex; flex-direction: column; gap: 12px; }
+  .trap {
+    display: grid;
+    grid-template-columns: minmax(0, 38%) minmax(0, 1fr);
+    gap: 4px 20px;
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-left: 3px solid var(--red);
+    padding: 13px 17px;
+  }
+  .trap .wrong { color: var(--red); font-weight: 600; font-size: 15px; }
+  .trap .right { color: var(--ink-soft); font-size: 15px; }
+  @media (max-width: 620px) { .trap { grid-template-columns: 1fr; } }
+
+  ul.check { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 9px; }
+  ul.check li {
+    display: grid;
+    grid-template-columns: 20px 1fr;
+    gap: 12px;
+    align-items: start;
+    color: var(--ink-soft);
+  }
+  ul.check li::before {
+    content: "";
+    width: 14px;
+    height: 14px;
+    border: 1.5px solid var(--pen);
+    margin-top: 5px;
+  }
+
+  footer {
+    border-top: 1px solid var(--rule);
+    padding-top: 18px;
+    font-size: 14px;
+    color: var(--ink-faint);
+  }
+  :focus-visible { outline: 2px solid var(--pen); outline-offset: 2px; }
+</style>
+
+<div class="wrap">
+
+  <header class="masthead">
+    <div class="exam-line">
+      <span>ICT295 · Backend d'une application</span>
+      <span>Jeudi 10 septembre 2026, 13h20</span>
+      <span>1 période</span>
+    </div>
+    <h1>Révision ICT295</h1>
+    <p class="lede">Les quatre objectifs annoncés, complétés avec les deux présentations du prof. Le test porte sur la version du projet <mark>avant MySQL</mark> : les données sont simulées dans un fichier JavaScript.</p>
+    <div class="rule"></div>
+  </header>
+
+  <!-- ================= OBJECTIF 1 ================= -->
+  <section class="obj">
+    <div class="obj-head">
+      <div class="obj-num">1</div>
+      <div>
+        <span class="tag">Objectif</span>
+        <h2>Créer un projet avec Node.js et Express</h2>
+      </div>
+    </div>
+    <div class="obj-body">
+
+      <div class="sub">
+        <h3>Langage compilé ou interprété</h3>
+        <p>C'est une diapositive entière du prof, et c'est ce qui explique ce qu'est Node. <mark>JavaScript est un langage interprété</mark>, et Node est son interpréteur.</p>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr><th>Critère</th><th>Compilé</th><th>Interprété</th></tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>Traduction</strong></td>
+                <td>Le code source est traduit <strong>en une fois</strong> en langage machine</td>
+                <td>Traduit <strong>ligne par ligne</strong> au moment de l'exécution</td>
+              </tr>
+              <tr>
+                <td><strong>Fichier généré</strong></td>
+                <td>Un binaire exécutable (<code>.exe</code>, <code>.dll</code>)</td>
+                <td>Aucun. Le code source est relu à chaque exécution</td>
+              </tr>
+              <tr>
+                <td><strong>Vitesse</strong></td>
+                <td>Rapide, le code est déjà optimisé</td>
+                <td>Plus lente, à cause de l'interprétation à la volée</td>
+              </tr>
+              <tr>
+                <td><strong>Préparation</strong></td>
+                <td>Doit être compilé avant d'être exécuté</td>
+                <td>Peut être exécuté directement</td>
+              </tr>
+              <tr>
+                <td><strong>Exemples</strong></td>
+                <td>C, C++, Rust, Go, Swift</td>
+                <td>Python, JavaScript, PHP, Ruby, Bash</td>
+              </tr>
+              <tr>
+                <td><strong>Outil requis</strong></td>
+                <td>Un <strong>compilateur</strong> (gcc, rustc)</td>
+                <td>Un <strong>interpréteur</strong> (python, <strong>node</strong>)</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <dl class="defs">
+        <div>
+          <dt>Node.js</dt>
+          <dd>L'<mark>interpréteur</mark> qui permet d'exécuter du JavaScript en dehors du navigateur, directement sur une machine. C'est ce qui rend possible d'écrire un serveur en JavaScript.</dd>
+        </div>
+        <div>
+          <dt>npm</dt>
+          <dd>Le gestionnaire de paquets de Node. Il télécharge les bibliothèques écrites par d'autres et gère leurs versions.</dd>
+        </div>
+        <div>
+          <dt>Express</dt>
+          <dd>Le <em>framework</em> standard qui offre un ensemble de fonctionnalités pour construire des applications web et mobiles. Il simplifie la gestion des routes, la lecture des requêtes et l'envoi des réponses.</dd>
+        </div>
+        <div>
+          <dt>nodemon</dt>
+          <dd>Un utilitaire qui redémarre automatiquement le serveur dès qu'un changement est détecté dans les fichiers sources.</dd>
+        </div>
+      </dl>
+
+      <div class="sub">
+        <h3>Les commandes, avec les options du prof</h3>
+<pre><code><span class="c"># cree le package.json (-y = reponses par defaut)</span>
+npm init -y
+
+<span class="c"># --save : dependance necessaire en PRODUCTION</span>
+npm install express --save
+
+<span class="c"># --save-dev : dependance de DEVELOPPEMENT uniquement</span>
+npm install nodemon --save-dev
+
+<span class="c"># demarre le serveur (script "start")</span>
+npm start</code></pre>
+        <p><mark>La différence entre <code>--save</code> et <code>--save-dev</code> est une question classique.</mark> Express est indispensable pour faire tourner l'application chez le client final. Nodemon ne sert qu'à toi, pendant que tu développes.</p>
+      </div>
+
+      <div class="sub">
+        <h3>Les trois fichiers et dossiers créés</h3>
+        <dl class="defs">
+          <div>
+            <dt><code>package.json</code></dt>
+            <dd>La carte d'identité du projet : son nom, ses dépendances, ses scripts. Le seul des trois qu'on met sur GitHub.</dd>
+          </div>
+          <div>
+            <dt><code>package-lock.json</code></dt>
+            <dd>Note les versions <em>exactes</em> installées, pour que le projet s'installe à l'identique sur une autre machine.</dd>
+          </div>
+          <div>
+            <dt><code>node_modules/</code></dt>
+            <dd>Le code des bibliothèques téléchargées. Jamais versionné : <code>npm install</code> le recrée à partir du <code>package.json</code>.</dd>
+          </div>
+        </dl>
+      </div>
+
+      <div class="sub">
+        <h3>Le serveur minimal</h3>
+<pre><code><span class="c">// import marche grace a "type": "module"</span>
+<span class="c">// sinon : const express = require('express')</span>
+import express from <span class="s">'express'</span>;
+
+const app = express();
+const port = <span class="s">3000</span>;
+
+<span class="c">// middleware : lit le JSON du body</span>
+app.use(express.json());
+
+app.get(<span class="s">'/'</span>, (req, res) => {
+    res.send(<span class="s">'Hello World!'</span>);
+});
+
+app.listen(port, () => {
+    console.log(<span class="s">`Example app listening on port ${port}`</span>);
+});</code></pre>
+      </div>
+
+      <div class="keep"><b>À savoir dire :</b> le serveur « écoute » sur un port. <code>localhost</code> désigne ta propre machine, et <code>3000</code> est la porte sur laquelle Express attend les requêtes. D'où l'adresse <code>http://localhost:3000</code>.</div>
+
+    </div>
+  </section>
+
+  <!-- ================= OBJECTIF 2 ================= -->
+  <section class="obj">
+    <div class="obj-head">
+      <div class="obj-num">2</div>
+      <div>
+        <span class="tag">Objectif</span>
+        <h2>Créer une API REST avec des données simulées dans un fichier JavaScript</h2>
+      </div>
+    </div>
+    <div class="obj-body">
+
+      <div class="keep"><b>Définition d'une route, mot pour mot :</b> une règle qui dit que si une requête HTTP arrive avec l'URL précisée et la méthode précisée, alors elle exécute le code donné.</div>
+
+      <div class="sub">
+        <h3>Une route se définit par trois choses</h3>
+        <dl class="defs">
+          <div><dt>1. Sa méthode HTTP</dt><dd>GET, POST, PUT, DELETE…</dd></div>
+          <div><dt>2. Son <em>path</em></dt><dd>L'URL de la route, par exemple <code>/api/activities/:id</code></dd></div>
+          <div><dt>3. Sa fonction</dt><dd>Le code exécuté quand la route est appelée. Elle a <mark>deux paramètres</mark> : la <strong>requête</strong> (URL, paramètres, body) et la <strong>réponse</strong> renvoyée au client.</dd></div>
+        </dl>
+      </div>
+
+      <div class="sub">
+        <h3>Anatomie d'une route</h3>
+<pre><code>activitiesRouter.get(<span class="s">'/:id'</span>, (req, res) => {
+    <span class="c">// req.params : parametres d'URL, du TEXTE</span>
+    const id = parseInt(req.params.id);
+
+    <span class="c">// req.body : donnees du client (POST, PUT)</span>
+    <span class="c">// const { name, startDate } = req.body;</span>
+
+    const activity = activities.find(a => a.id === id);
+
+    <span class="c">// res.json() repond et termine</span>
+    res.json({ activity });
+});</code></pre>
+      </div>
+
+      <div class="sub">
+        <h3>Les quatre verbes, selon le prof</h3>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr><th>Verbe</th><th>Rôle</th><th>URL</th><th>Body</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>POST</code></td><td><strong>Créer</strong> une nouvelle ressource</td><td>/api/activities</td><td>Oui</td></tr>
+              <tr><td><code>GET</code></td><td><strong>Lire</strong> une ressource précise ou une collection</td><td>/api/activities<br>/api/activities/2</td><td>Non</td></tr>
+              <tr><td><code>PUT</code></td><td><strong>Mettre à jour</strong> une ressource</td><td>/api/activities/2</td><td>Oui</td></tr>
+              <tr><td><code>DELETE</code></td><td><strong>Supprimer</strong> une ressource par son identifiant</td><td>/api/activities/2</td><td>Non</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="sub">
+        <h3>Les recommandations de nommage REST</h3>
+        <p>Une diapositive entière y est consacrée, c'est donc matière à question.</p>
+        <dl class="defs">
+          <div><dt>Des noms, pas des verbes</dt><dd>L'action est portée par la méthode HTTP, jamais par l'URL. Donc <code>/activities</code> et non <code>/getActivities</code>.</dd></div>
+          <div><dt>Le pluriel</dt><dd>Pour la cohérence des URI : <code>customers</code> plutôt que <code>customer_list</code>.</dd></div>
+          <div><dt>Des URL courtes</dt><dd>Le nommage sensé favorise la compréhension de l'API.</dd></div>
+          <div><dt>Des minuscules</dt><dd>Avec un tiret <code>-</code> ou un tiret bas <code>_</code> comme séparateur.</dd></div>
+        </dl>
+      </div>
+
+      <div class="sub">
+        <h3>Les middlewares</h3>
+        <p>Ce sont des fonctions qui ont accès à <mark>trois choses</mark> : l'objet de requête <code>req</code>, l'objet de réponse <code>res</code>, et la fonction middleware suivante <code>next</code>.</p>
+        <p>Elles s'exécutent <em>avant</em> les routes, sur le chemin de la requête. <code>express.json()</code> en est un : il lit le JSON du body et le rend disponible dans <code>req.body</code>.</p>
+      </div>
+
+      <div class="sub">
+        <h3>Le fichier de données simulées</h3>
+<pre><code><span class="c">// db/mock-activities.js</span>
+let activities = [
+    {
+        id: <span class="s">1</span>,
+        name: <span class="s">"Cours de natation"</span>,
+        startDate: <span class="s">"2026-09-01"</span>,
+        duration: <span class="s">60</span>,
+    },
+];
+
+<span class="c">// export default : une seule chose exportee</span>
+export default activities;</code></pre>
+      </div>
+
+      <div class="sub">
+        <h3>Les deux méthodes de tableau à ne pas confondre</h3>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr><th>Méthode</th><th>Retourne</th><th>Sert à</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><code>find()</code></td><td>L'objet lui-même, ou <code>undefined</code></td><td>Lire une activité (GET)</td></tr>
+              <tr><td><code>findIndex()</code></td><td>La position, à partir de 0, ou <code>-1</code></td><td>Remplacer (PUT) ou supprimer (DELETE)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>On a besoin de la <em>position</em> pour écrire dans une case (<code>activities[index] = ...</code>) ou pour retirer un élément (<code>splice(index, 1)</code>).</p>
+      </div>
+
+      <div class="sub">
+        <h3>Le calcul de l'id, question classique</h3>
+        <p><code>activities.length + 1</code> est <mark>faux</mark> : si on supprime une activité au milieu, la longueur diminue et le prochain ajout recrée un id déjà utilisé.</p>
+<pre><code>const id = Math.max(...activities.map(a => a.id)) + <span class="s">1</span>;</code></pre>
+      </div>
+
+      <div class="keep"><b>La limite de cette approche :</b> le tableau vit dans la mémoire du programme. Un redémarrage du serveur efface toutes les modifications et remet les données de départ. C'est précisément pour ça qu'on branche ensuite une vraie base de données.</div>
+
+    </div>
+  </section>
+
+  <!-- ================= OBJECTIF 3 ================= -->
+  <section class="obj">
+    <div class="obj-head">
+      <div class="obj-num">3</div>
+      <div>
+        <span class="tag">Objectif</span>
+        <h2>Tester une API REST</h2>
+      </div>
+    </div>
+    <div class="obj-body">
+
+      <p>Le prof cite <mark>deux outils</mark>, connais les deux. Ils envoient des requêtes HTTP comme le ferait un site web, une application mobile ou un programme.</p>
+
+      <div class="sub">
+        <h3>Postman</h3>
+        <p>Une application qui permet de créer des requêtes HTTP à l'aide d'une <strong>interface graphique</strong>.</p>
+        <dl class="defs">
+          <div><dt>La méthode</dt><dd>Le menu déroulant à gauche de l'adresse : GET, POST, PUT, DELETE.</dd></div>
+          <div><dt>L'URL</dt><dd><code>http://localhost:3000/api/activities</code>, avec ou sans id selon la route.</dd></div>
+          <div><dt>Le Body</dt><dd>Uniquement pour POST et PUT. Onglet <em>Body</em>, bouton <em>raw</em>, puis le menu de droite sur <em>JSON</em>.</dd></div>
+          <div><dt>Send</dt><dd>La réponse s'affiche en bas, avec son code de statut et son temps d'exécution.</dd></div>
+        </dl>
+      </div>
+
+      <div class="sub">
+        <h3>curl</h3>
+        <p>Un programme <strong>en ligne de commande</strong>, dans le terminal, qui envoie des requêtes HTTP vers un serveur. Même rôle que Postman, sans interface graphique.</p>
+<pre><code>curl -X POST http://localhost:3000/api/activities
+  -H <span class="s">"Content-Type: application/json"</span>
+  -d <span class="s">'{"name":"test", "duration":"2"}'</span></code></pre>
+        <p>Les options à reconnaître : <code>-X</code> donne la méthode, <code>-H</code> ajoute un en-tête, <code>-d</code> porte les données du body.</p>
+      </div>
+
+      <div class="sub">
+        <h3>Les codes de statut HTTP</h3>
+        <p>Le prof en note quatre en particulier, marqués ci-dessous.</p>
+        <div class="scroll">
+          <table>
+            <thead>
+              <tr><th>Code</th><th>Famille</th><th>Signification</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>200</strong> OK</td><td>2xx, succès</td><td><mark>La requête a réussi</mark></td></tr>
+              <tr><td><strong>201</strong> Created</td><td>2xx, succès</td><td>Une ressource a été créée, réponse idéale d'un POST</td></tr>
+              <tr><td><strong>403</strong> Forbidden</td><td>4xx, erreur du client</td><td><mark>Le client n'a pas les droits d'accès, le serveur refuse de répondre</mark></td></tr>
+              <tr><td><strong>404</strong> Not Found</td><td>4xx, erreur du client</td><td><mark>Le serveur n'a pas trouvé la ressource demandée</mark></td></tr>
+              <tr><td><strong>500</strong> Internal Server Error</td><td>5xx, erreur du serveur</td><td><mark>Le serveur a rencontré une situation qu'il ne sait pas traiter</mark></td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Retiens la logique des familles : 2xx tout va bien, <strong>4xx la faute du client</strong>, 5xx la faute du serveur.</p>
+      </div>
+
+      <div class="keep"><b>Format des données :</b> une API REST échange du <b>JSON</b>. Ce n'est pas tout à fait du JavaScript : en JSON, les noms de propriétés sont entre <mark>guillemets doubles</mark> et il n'y a pas de virgule après le dernier élément.</div>
+
+    </div>
+  </section>
+
+  <!-- ================= OBJECTIF 4 ================= -->
+  <section class="obj">
+    <div class="obj-head">
+      <div class="obj-num">4</div>
+      <div>
+        <span class="tag">Objectif</span>
+        <h2>Backend, frontend, serveur web, API REST</h2>
+      </div>
+    </div>
+    <div class="obj-body">
+
+      <div class="sub">
+        <h3>L'architecture, telle que le prof la dessine</h3>
+        <div class="cycle">
+          <div class="cycle-step"><em>1 · client</em><b>Navigateur ou Postman</b><span>Envoie une requête HTTP</span></div>
+          <div class="cycle-step"><em>2 · serveur</em><b>Serveur web HTTP</b><span>Reçoit la demande et la transmet</span></div>
+          <div class="cycle-step"><em>3 · backend</em><b>Application Express, l'API</b><span>Trouve la route et exécute le code</span></div>
+          <div class="cycle-step"><em>4 · données</em><b>La base de données</b><span>Interrogée par une requête SQL, renvoie des résultats</span></div>
+          <div class="cycle-step"><em>5 · retour</em><b>Réponse HTTP</b><span>Un code de statut et des données en JSON</span></div>
+        </div>
+        <p>Dans notre projet, l'étape 4 était remplacée par le fichier JavaScript de données simulées, jusqu'à ce qu'on branche MySQL.</p>
+      </div>
+
+      <dl class="defs">
+        <div>
+          <dt>Serveur web</dt>
+          <dd>L'ordinateur qui <mark>reçoit et répond</mark> aux demandes des utilisateurs voulant utiliser une application, mobile ou web. Il fonctionne sur le modèle <strong>client / serveur</strong> : le navigateur demande le contenu via HTTP, le serveur le trouve et le renvoie via HTTP. S'il ne peut pas le fournir, il renvoie un code d'erreur comme 404 ou 403.</dd>
+        </div>
+        <div>
+          <dt>Frontend</dt>
+          <dd>Ce que <mark>voit et utilise l'utilisateur</mark> : la partie visible, l'interface graphique. Langages : <strong>HTML, CSS, JavaScript</strong>, avec des outils comme Vue.js ou React.</dd>
+        </div>
+        <div>
+          <dt>Backend</dt>
+          <dd>Ce qui se passe <mark>derrière</mark> : la partie cachée qui traite les données, interagit avec la base de données et gère la <strong>logique métier</strong>. Langages : JavaScript avec Node.js, PHP, Python, Java, C#.</dd>
+        </div>
+        <div>
+          <dt>Client</dt>
+          <dd>Celui qui envoie la requête : un navigateur, une application mobile, ou un autre programme. Le client demande, le serveur répond, jamais l'inverse.</dd>
+        </div>
+        <div>
+          <dt>API REST</dt>
+          <dd><mark>Application Programming Interface — Representational State Transfer</mark>. Un ensemble de routes sur un serveur, qui permet à des clients de <strong>lire et manipuler des données via le protocole HTTP</strong>.</dd>
+        </div>
+        <div>
+          <dt>Ressource</dt>
+          <dd>La chose manipulée par l'API : des utilisateurs, des produits, des articles, des activités. Chaque ressource est accessible par une <strong>URL</strong>, et on utilise les <strong>méthodes HTTP</strong> pour agir dessus.</dd>
+        </div>
+      </dl>
+
+      <div class="keep"><b>Pourquoi séparer frontend et backend ?</b> Parce que plusieurs clients différents — un site, une application mobile, un autre programme — peuvent utiliser la même API. La logique et les données sont écrites une seule fois, et restent sur le serveur, donc protégées.</div>
+
+    </div>
+  </section>
+
+  <!-- ================= FLASHCARDS ================= -->
+  <section class="obj">
+    <div class="obj-head">
+      <div class="obj-num">?</div>
+      <div>
+        <span class="tag">Auto-test</span>
+        <h2>Réponds avant de cliquer</h2>
+      </div>
+    </div>
+    <div class="cards">
+
+      <details>
+        <summary>Quelle est la différence entre un langage compilé et un langage interprété ?</summary>
+        <div class="answer">Un langage compilé est traduit en une fois en langage machine et produit un fichier exécutable ; il est rapide mais doit être compilé avant. Un langage interprété est traduit ligne par ligne au moment de l'exécution, ne produit aucun exécutable, et s'exécute directement, mais plus lentement.</div>
+      </details>
+
+      <details>
+        <summary>JavaScript est-il compilé ou interprété ? Quel est son interpréteur côté serveur ?</summary>
+        <div class="answer">Interprété. Son interpréteur côté serveur est <strong>Node.js</strong>, comme <code>python</code> l'est pour Python.</div>
+      </details>
+
+      <details>
+        <summary>Cite deux langages compilés et deux langages interprétés.</summary>
+        <div class="answer">Compilés : C, C++, Rust, Go, Swift. Interprétés : Python, JavaScript, PHP, Ruby, Bash.</div>
+      </details>
+
+      <details>
+        <summary>Que veut dire l'acronyme API REST, en entier ?</summary>
+        <div class="answer"><em>Application Programming Interface — Representational State Transfer</em>. C'est un ensemble de routes sur un serveur qui permet à des clients de lire et manipuler des données via HTTP.</div>
+      </details>
+
+      <details>
+        <summary>Qu'est-ce qu'un serveur web ?</summary>
+        <div class="answer">Un ordinateur qui reçoit et répond aux demandes des utilisateurs voulant utiliser une application. Il fonctionne sur le modèle client / serveur, via le protocole HTTP.</div>
+      </details>
+
+      <details>
+        <summary>Quelle est la différence entre frontend et backend ?</summary>
+        <div class="answer">Le frontend est ce que voit et utilise l'utilisateur, l'interface graphique : HTML, CSS, JavaScript. Le backend est la partie cachée qui traite les données, interagit avec la base et gère la logique métier : Node.js, PHP, Python, Java, C#.</div>
+      </details>
+
+      <details>
+        <summary>Par quelles trois choses une route est-elle définie ?</summary>
+        <div class="answer">Sa méthode HTTP, son <em>path</em> qui est l'URL, et la fonction à exécuter. Cette fonction a deux paramètres : la requête et la réponse.</div>
+      </details>
+
+      <details>
+        <summary>Qu'est-ce qu'un middleware ?</summary>
+        <div class="answer">Une fonction qui a accès à l'objet de requête <code>req</code>, à l'objet de réponse <code>res</code>, et à la fonction middleware suivante <code>next</code>. Elle s'exécute avant les routes. <code>express.json()</code> en est un.</div>
+      </details>
+
+      <details>
+        <summary>Différence entre <code>npm install express --save</code> et <code>--save-dev</code> ?</summary>
+        <div class="answer"><code>--save</code> déclare une dépendance nécessaire pour faire tourner l'application <strong>en production</strong>. <code>--save-dev</code> déclare une dépendance utile uniquement en <strong>développement</strong>, comme nodemon.</div>
+      </details>
+
+      <details>
+        <summary>Quelles sont les règles de nommage d'une URL REST ?</summary>
+        <div class="answer">Des noms et jamais des verbes, au pluriel, en minuscules, avec un tiret ou un tiret bas comme séparateur, et aussi courtes que possible. L'action est portée par la méthode HTTP.</div>
+      </details>
+
+      <details>
+        <summary>Que signifient 200, 403, 404 et 500 ?</summary>
+        <div class="answer">200 : la requête a réussi. 403 : le client n'a pas les droits d'accès, le serveur refuse de répondre. 404 : le serveur n'a pas trouvé la ressource. 500 : le serveur a rencontré une situation qu'il ne sait pas traiter.</div>
+      </details>
+
+      <details>
+        <summary>Cite les deux outils pour tester une API REST.</summary>
+        <div class="answer">Postman, avec une interface graphique, et curl, en ligne de commande dans le terminal.</div>
+      </details>
+
+      <details>
+        <summary>À quoi sert <code>app.use(express.json())</code> ?</summary>
+        <div class="answer">C'est un middleware qui permet à Express de lire le JSON envoyé dans le body des requêtes. Sans lui, <code>req.body</code> n'est pas exploitable et un POST échoue.</div>
+      </details>
+
+      <details>
+        <summary>Différence entre <code>req.params</code> et <code>req.body</code> ?</summary>
+        <div class="answer"><code>req.params</code> contient les paramètres de l'URL, déclarés avec deux points comme <code>/:id</code>. <code>req.body</code> contient les données envoyées dans le corps de la requête, pour un POST ou un PUT.</div>
+      </details>
+
+      <details>
+        <summary>Pourquoi écrit-on <code>parseInt(req.params.id)</code> ?</summary>
+        <div class="answer">Parce qu'un paramètre d'URL est toujours du texte. Sans conversion, la comparaison <code>"2" === 2</code> serait fausse et aucune activité ne serait trouvée.</div>
+      </details>
+
+      <details>
+        <summary>Différence entre <code>find()</code> et <code>findIndex()</code> ?</summary>
+        <div class="answer"><code>find()</code> retourne l'objet trouvé. <code>findIndex()</code> retourne sa position dans le tableau, en commençant à 0. On a besoin de la position pour remplacer ou supprimer un élément.</div>
+      </details>
+
+      <details>
+        <summary>Que se passe-t-il au redémarrage du serveur, avec des données simulées ?</summary>
+        <div class="answer">Toutes les modifications sont perdues. Le tableau vit dans la mémoire du programme et repart de son état initial, tel qu'écrit dans le fichier JavaScript.</div>
+      </details>
+
+      <details>
+        <summary>Pourquoi ne met-on jamais <code>node_modules</code> sur GitHub ?</summary>
+        <div class="answer">Parce que ce sont des milliers de fichiers téléchargés, que <code>npm install</code> recrée à l'identique à partir du <code>package.json</code>.</div>
+      </details>
+
+    </div>
+  </section>
+
+  <!-- ================= PIEGES ================= -->
+  <section class="obj">
+    <div class="obj-head">
+      <div class="obj-num">!</div>
+      <div>
+        <span class="tag">Corrections fréquentes</span>
+        <h2>Les pièges</h2>
+      </div>
+    </div>
+    <div class="traps">
+      <div class="trap">
+        <div class="wrong">« Node.js est un langage »</div>
+        <div class="right">Non. Le langage est JavaScript. Node est l'interpréteur qui l'exécute hors du navigateur.</div>
+      </div>
+      <div class="trap">
+        <div class="wrong">« JavaScript est compilé »</div>
+        <div class="right">Non, il est interprété : traduit ligne par ligne à l'exécution, sans fichier exécutable généré.</div>
+      </div>
+      <div class="trap">
+        <div class="wrong">« Express est un langage » ou « une base de données »</div>
+        <div class="right">Non. Express est un framework pour Node, qui simplifie l'écriture d'un serveur web.</div>
+      </div>
+      <div class="trap">
+        <div class="wrong">Confondre l'URL et le verbe</div>
+        <div class="right">Une URL nomme une ressource, un nom. C'est le verbe HTTP qui porte l'action. Donc <code>/api/activities/2</code> avec DELETE, jamais <code>/api/deleteActivity/2</code>.</div>
+      </div>
+      <div class="trap">
+        <div class="wrong">Nommer une ressource au singulier</div>
+        <div class="right">Le prof recommande le pluriel : <code>customers</code> plutôt que <code>customer_list</code>.</div>
+      </div>
+      <div class="trap">
+        <div class="wrong">Mettre un id dans l'URL d'un POST</div>
+        <div class="right">Le POST se fait sur <code>/api/activities</code> sans id : c'est le serveur qui attribue l'identifiant.</div>
+      </div>
+      <div class="trap">
+        <div class="wrong">Calculer l'id avec <code>length + 1</code></div>
+        <div class="right">Faux dès qu'une suppression a eu lieu. Il faut le plus grand id existant, plus 1.</div>
+      </div>
+      <div class="trap">
+        <div class="wrong">Confondre 403 et 404</div>
+        <div class="right">403, la ressource existe mais l'accès est refusé. 404, la ressource est introuvable.</div>
+      </div>
+      <div class="trap">
+        <div class="wrong">Écrire du JSON avec des guillemets simples</div>
+        <div class="right">Le JSON exige des guillemets doubles autour des noms de propriétés, et interdit la virgule après le dernier élément.</div>
+      </div>
+      <div class="trap">
+        <div class="wrong">« Le serveur peut envoyer une requête au client »</div>
+        <div class="right">Dans ce modèle, non. Le client demande, le serveur répond. C'est toujours le client qui déclenche l'échange.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================= CHECKLIST ================= -->
+  <section class="obj">
+    <div class="obj-head">
+      <div class="obj-num">✓</div>
+      <div>
+        <span class="tag">Avant d'entrer en salle</span>
+        <h2>Je sais expliquer</h2>
+      </div>
+    </div>
+    <ul class="check">
+      <li>La différence entre langage compilé et interprété, avec deux exemples de chaque</li>
+      <li>Ce que sont Node.js, npm et Express, et comment ils se distinguent</li>
+      <li>La différence entre <code>--save</code> et <code>--save-dev</code></li>
+      <li>Le rôle de <code>package.json</code>, et pourquoi <code>node_modules</code> n'est pas versionné</li>
+      <li>Les trois éléments qui définissent une route</li>
+      <li>Ce qu'est un middleware, et ses trois paramètres</li>
+      <li>Les quatre verbes HTTP, avec l'opération et l'URL qui vont avec</li>
+      <li>Les règles de nommage d'une URL REST</li>
+      <li>Où voyagent les données : URL pour désigner, body pour le contenu</li>
+      <li>La différence entre <code>find()</code> et <code>findIndex()</code></li>
+      <li>Comment tester une API avec Postman et avec curl</li>
+      <li>Les codes 200, 403, 404 et 500, et la logique des familles</li>
+      <li>Frontend, backend, serveur web, client, API REST, ressource, en une phrase chacun</li>
+      <li>L'architecture complète, du client jusqu'à la base de données</li>
+      <li>Pourquoi des données simulées disparaissent au redémarrage</li>
+    </ul>
+  </section>
+
+  <footer>Fiche établie à partir des exercices 1 à 4, des quatre objectifs annoncés pour le test, et des deux présentations <em>ICT-295-notion-base</em> et <em>Creation-app-web-express</em>. La partie MySQL, vue à l'exercice 5, n'est pas au programme de cette évaluation.</footer>
+
+</div>

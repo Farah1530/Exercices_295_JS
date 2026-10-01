@@ -34,6 +34,20 @@ app.get('/api', (req, res) => {
 // Toutes les routes définies dans activitiesRouter seront accessibles sous /api/activities
 app.use('/api/activities', activitiesRouter);
 
+// ERREUR 404 : l'URL demandée n'existe pas dans notre API
+// Express teste les routes dans l'ordre où elles sont écrites dans ce fichier.
+// Ce bloc est placé APRÈS toutes les routes : on arrive donc ici seulement
+// si AUCUNE route au-dessus ne correspond à l'URL demandée.
+// Exemple : http://localhost:3000/api/utilisateurs
+// app.use() sans adresse s'applique à toutes les URL et à toutes les méthodes (GET, POST, PUT, DELETE)
+app.use((req, res) => {
+    const message = "Impossible de trouver la ressource demandee ! donc essaye de trouver par toi meme debile va";
+
+    // res.status(404) choisit le code HTTP 404 (Not Found = « non trouvé »)
+    // .json() envoie ensuite le message au client, au format JSON
+    res.status(404).json({ error: message });
+});
+
 // On démarre le serveur et on lui dit d'écouter sur le port défini
 // La fonction callback s'exécute une seule fois au démarrage pour confirmer que ça tourne
 app.listen(port, () => {
