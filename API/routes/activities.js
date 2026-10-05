@@ -57,6 +57,44 @@ const activitiesRouter = express.Router();
 // LIRE toutes les activites
 
 // Route GET "/" (qui correspond a /api/activities dans app.js)
+/**
+ * @openapi
+ * /api/activities:
+ *   get:
+ *     summary: Affiche la liste des activites.
+ *     description: Renvoie toutes les activites. Les deux parametres name et limit sont facultatifs.
+ *     parameters:
+ *       - in: query
+ *         name: name
+ *         required: false
+ *         schema:
+ *           type: string
+ *         description: Ne garde que les activites dont le nom contient ce mot (3 caracteres minimum).
+ *         example: cours
+ *       - in: query
+ *         name: limit
+ *         required: false
+ *         schema:
+ *           type: integer
+ *         description: Nombre maximum d activites renvoyees.
+ *         example: 3
+ *     responses:
+ *       200:
+ *         description: La liste des activites.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 activities:
+ *                   type: array
+ *                   items:
+ *                     $ref: "#/components/schemas/activity"
+ *       400:
+ *         description: Le mot recherche fait moins de 3 caracteres, ou la limite est incorrecte.
+ *       500:
+ *         description: Erreur interne du serveur ou de la base de donnees.
+ */
 activitiesRouter.get('/', async (req, res) => {
     // try = "essaie d'executer ce code"
     try {
@@ -105,6 +143,37 @@ activitiesRouter.get('/', async (req, res) => {
 // LIRE une seule activite
 
 // Route GET "/:id" (qui correspond a /api/activities/:id dans app.js)
+/**
+ * @openapi
+ * /api/activities/{id}:
+ *   get:
+ *     summary: Affiche une seule activite.
+ *     description: Renvoie l activite qui porte l identifiant demande.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Identifiant de l activite.
+ *         example: 1
+ *     responses:
+ *       200:
+ *         description: L activite demandee.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 activity:
+ *                   $ref: "#/components/schemas/activity"
+ *       400:
+ *         description: L identifiant n est pas un nombre entier positif.
+ *       404:
+ *         description: Aucune activite ne porte cet identifiant.
+ *       500:
+ *         description: Erreur interne du serveur ou de la base de donnees.
+ */
 activitiesRouter.get('/:id', async (req, res) => {
     try {
         // req.params.id est toujours du texte, Number() le transforme en nombre.
@@ -144,6 +213,51 @@ activitiesRouter.get('/:id', async (req, res) => {
 // AJOUTER une activite
 
 // Route POST "/" (qui correspond a /api/activities dans app.js)
+/**
+ * @openapi
+ * /api/activities:
+ *   post:
+ *     summary: Ajoute une activite.
+ *     description: Cree une nouvelle activite. L identifiant est genere par MySQL.
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Cours de guitare
+ *               startDate:
+ *                 type: string
+ *                 format: date
+ *                 example: "2026-10-01"
+ *               duration:
+ *                 type: integer
+ *                 example: 75
+ *             required:
+ *               - name
+ *               - startDate
+ *               - duration
+ *     responses:
+ *       200:
+ *         description: L activite a bien ete creee.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Activite creee
+ *                 activity:
+ *                   $ref: "#/components/schemas/activity"
+ *       400:
+ *         description: Le nom, la date ou la duree est vide, ou la duree depasse 144.
+ *       500:
+ *         description: Erreur interne du serveur ou de la base de donnees.
+ */
 activitiesRouter.post('/', async (req, res) => {
     try {
         // Les donnees envoyees par le client (le Body dans Postman) sont dans req.body
@@ -183,6 +297,61 @@ activitiesRouter.post('/', async (req, res) => {
 // MODIFIER une activite
 
 // Route PUT "/:id" (qui correspond a /api/activities/:id dans app.js)
+/**
+ * @openapi
+ * /api/activities/{id}:
+ *   put:
+ *     summary: Modifie une activite.
+ *     description: Remplace le nom, la date et la duree de l activite demandee.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Identifiant de l activite a modifier.
+ *         example: 2
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name:
+ *                 type: string
+ *                 example: Cours de guitare avance
+ *               startDate:
+ *                 type: string
+ *                 format: date
+ *                 example: "2026-10-01"
+ *               duration:
+ *                 type: integer
+ *                 example: 90
+ *             required:
+ *               - name
+ *               - startDate
+ *               - duration
+ *     responses:
+ *       200:
+ *         description: L activite a bien ete modifiee.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Activite modifiee
+ *                 activity:
+ *                   $ref: "#/components/schemas/activity"
+ *       400:
+ *         description: Identifiant incorrect, champ vide, ou duree superieure ou egale a 144.
+ *       404:
+ *         description: Aucune activite ne porte cet identifiant.
+ *       500:
+ *         description: Erreur interne du serveur ou de la base de donnees.
+ */
 activitiesRouter.put('/:id', async (req, res) => {
     try {
         // L'id de l'activite a modifier vient de l'URL.
@@ -236,6 +405,38 @@ activitiesRouter.put('/:id', async (req, res) => {
 // SUPPRIMER une activite
 
 // Route DELETE "/:id" (qui correspond a /api/activities/:id dans app.js)
+/**
+ * @openapi
+ * /api/activities/{id}:
+ *   delete:
+ *     summary: Supprime une activite.
+ *     description: Supprime definitivement l activite qui porte l identifiant demande.
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: integer
+ *         description: Identifiant de l activite a supprimer.
+ *         example: 12
+ *     responses:
+ *       200:
+ *         description: L activite a bien ete supprimee.
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Activite supprimee
+ *       400:
+ *         description: L identifiant n est pas un nombre entier positif.
+ *       404:
+ *         description: Aucune activite ne porte cet identifiant.
+ *       500:
+ *         description: Erreur interne du serveur ou de la base de donnees.
+ */
 activitiesRouter.delete('/:id', async (req, res) => {
     try {
         // Pour supprimer, on a seulement besoin de l'id, qui vient de l'URL.

@@ -2,6 +2,12 @@
 // Express est un framework qui facilite la création de serveurs web
 import express from 'express';
 
+// On importe swagger-ui-express, qui sait afficher la page web de documentation
+import swaggerUi from 'swagger-ui-express';
+
+// On importe la description de notre API, fabriquee dans swagger.js
+import { openApiSpecification } from './swagger.js';
+
 // On importe le routeur des activités depuis le fichier dédié
 // Ce routeur contient toutes les routes liées aux activités
 import activitiesRouter from './routes/activities.js';
@@ -17,6 +23,18 @@ const port = 3000;
 // On dit à Express d'accepter et de lire automatiquement le JSON
 // dans le corps des requêtes (utile pour les POST et PUT)
 app.use(express.json());
+
+// DOCUMENTATION DE L'API (Swagger)
+// On branche la page de documentation sur l'adresse /api-docs :
+// http://localhost:3000/api-docs
+//
+// swaggerUi.serve   fournit les fichiers de la page (html, css, javascript)
+// swaggerUi.setup   construit la page a partir de la description fabriquee dans swagger.js
+// explorer: true    ajoute la barre de recherche en haut de la page
+//
+// Cette ligne est placee AVANT le bloc des erreurs 404,
+// sinon /api-docs serait traitee comme une URL inconnue.
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openApiSpecification, { explorer: true }));
 
 // Route GET sur "/" : quand quelqu'un accède à http://localhost:3000/
 // le serveur répond avec le texte "Hello World!"
