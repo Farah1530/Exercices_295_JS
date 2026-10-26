@@ -177,6 +177,8 @@ const db = {
 
 
 // On exporte l'objet "db" pour pouvoir l'utiliser dans les routes.
-// Les accolades { db } exportent la variable sous son nom :
-// il faudra donc aussi ecrire { db } au moment de l'importer.
-export { db };
+// Les accolades { db, poolConn } exportent les 2 variables sous leur nom :
+// il faudra donc aussi ecrire les accolades au moment de les importer.
+// poolConn est exporte depuis l'exercice 9 : db/db-users.js s'en sert
+// pour utiliser la meme connexion a la base.
+export { db, poolConn };

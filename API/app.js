@@ -12,6 +12,10 @@ import { openApiSpecification } from './swagger.js';
 // Ce routeur contient toutes les routes liées aux activités
 import activitiesRouter from './routes/activities.js';
 
+// On importe le routeur des utilisateurs (exercice 9)
+// Il contient les routes d'inscription et de connexion
+import usersRouter from './routes/users.js';
+
 // On crée une application Express
 // "app" est l'objet principal qui représente notre serveur
 const app = express();
@@ -51,6 +55,11 @@ app.get('/api', (req, res) => {
 // On connecte le routeur des activités à l'URL "/api/activities"
 // Toutes les routes définies dans activitiesRouter seront accessibles sous /api/activities
 app.use('/api/activities', activitiesRouter);
+
+// On connecte le routeur des utilisateurs a l'URL "/api/users"
+// Ces 2 routes ne sont volontairement PAS protegees par le token :
+// il faut bien pouvoir creer un compte et se connecter avant d'en avoir un
+app.use('/api/users', usersRouter);
 
 // ERREUR 404 : l'URL demandée n'existe pas dans notre API
 // Express teste les routes dans l'ordre où elles sont écrites dans ce fichier.

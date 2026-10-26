@@ -30,3 +30,20 @@ INSERT INTO activities (name, startDate, duration) VALUES
     ('Football junior', '2026-09-10', 120),
     ('Yoga debutants', '2026-09-15', 45),
     ('Activite Amin', '2026-08-15', 60);
+
+
+-- =============================================================
+-- EXERCICE 9 : LA TABLE DES UTILISATEURS
+-- Elle sert a l'authentification : un utilisateur s'inscrit (signup),
+-- puis se connecte (login) pour recevoir un token.
+-- =============================================================
+
+-- id       : identifiant unique, genere automatiquement par MySQL
+-- username : nom d'utilisateur. UNIQUE empeche deux comptes du meme nom
+-- password : le mot de passe HACHE par bcrypt, jamais le mot de passe en clair.
+--            Un hachage bcrypt fait 60 caracteres, on prevoit large avec 255.
+CREATE TABLE IF NOT EXISTS users (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    username VARCHAR(50) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL
+);

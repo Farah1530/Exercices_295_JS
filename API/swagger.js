@@ -1,4 +1,4 @@
-// =============================================================
+
 // CONFIGURATION DE SWAGGER : LA DOCUMENTATION DE L'API
 //
 // Swagger sert a documenter une API REST. Il fabrique une page web ou l'on voit
@@ -12,7 +12,7 @@
 // - swagger-ui-express prend ce JSON et affiche la page web. Il est appele dans app.js
 //
 // Meme organisation que le fichier swagger.js de l'exemple Contacts de la prof.
-// =============================================================
+
 
 
 // On importe swagger-jsdoc, installe avec "npm install swagger-jsdoc"
@@ -45,6 +45,17 @@ const options = {
         // On ecrit une seule fois a quoi ressemble une activite, puis chaque route
         // y fait reference avec $ref, au lieu de tout reecrire a chaque fois.
         components: {
+            // EXERCICE 9 : on declare que notre API est protegee par un token.
+            // Cela fait apparaitre le bouton "Authorize" en haut de la page Swagger,
+            // dans lequel on colle le token recu par /api/users/login.
+            securitySchemes: {
+                bearerAuth: {
+                    type: 'http',
+                    scheme: 'bearer',
+                    bearerFormat: 'JWT',
+                },
+            },
+
             schemas: {
                 activity: {
                     type: 'object',

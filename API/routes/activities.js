@@ -48,6 +48,11 @@ import { db } from '../db/db-activities.js';
 // On importe les fonctions de validation depuis helper.js
 import { isValidId, isEmpty, isValidDuration, isValidSearchName, isValidLimit, MAX_DURATION, MIN_SEARCH_LENGTH } from '../helper.js';
 
+// On importe le gardien qui verifie le token (exercice 9).
+// Place en 2e argument d'une route, il s'execute AVANT elle :
+// si le token est absent ou invalide, la route n'est jamais atteinte.
+import auth from '../Authorization/auth.js';
+
 // On cree un routeur Express
 // Le Router permet de regrouper les routes liees aux activites dans un fichier separe
 // au lieu de tout ecrire dans app.js
@@ -78,6 +83,8 @@ const activitiesRouter = express.Router();
  *           type: integer
  *         description: Nombre maximum d activites renvoyees.
  *         example: 3
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: La liste des activites.
@@ -92,10 +99,12 @@ const activitiesRouter = express.Router();
  *                     $ref: "#/components/schemas/activity"
  *       400:
  *         description: Le mot recherche fait moins de 3 caracteres, ou la limite est incorrecte.
+ *       401:
+ *         description: Token absent, invalide ou expire.
  *       500:
  *         description: Erreur interne du serveur ou de la base de donnees.
  */
-activitiesRouter.get('/', async (req, res) => {
+activitiesRouter.get('/', auth, async (req, res) => {
     // try = "essaie d'executer ce code"
     try {
         // EXERCICE 7 : les parametres de l'URL se trouvent dans req.query.
@@ -157,6 +166,8 @@ activitiesRouter.get('/', async (req, res) => {
  *           type: integer
  *         description: Identifiant de l activite.
  *         example: 1
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: L activite demandee.
@@ -171,10 +182,12 @@ activitiesRouter.get('/', async (req, res) => {
  *         description: L identifiant n est pas un nombre entier positif.
  *       404:
  *         description: Aucune activite ne porte cet identifiant.
+ *       401:
+ *         description: Token absent, invalide ou expire.
  *       500:
  *         description: Erreur interne du serveur ou de la base de donnees.
  */
-activitiesRouter.get('/:id', async (req, res) => {
+activitiesRouter.get('/:id', auth, async (req, res) => {
     try {
         // req.params.id est toujours du texte, Number() le transforme en nombre.
         // On utilise Number() et pas parseInt() : parseInt("12abc") donnerait 12,
@@ -240,6 +253,8 @@ activitiesRouter.get('/:id', async (req, res) => {
  *               - name
  *               - startDate
  *               - duration
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: L activite a bien ete creee.
@@ -255,10 +270,12 @@ activitiesRouter.get('/:id', async (req, res) => {
  *                   $ref: "#/components/schemas/activity"
  *       400:
  *         description: Le nom, la date ou la duree est vide, ou la duree depasse 144.
+ *       401:
+ *         description: Token absent, invalide ou expire.
  *       500:
  *         description: Erreur interne du serveur ou de la base de donnees.
  */
-activitiesRouter.post('/', async (req, res) => {
+activitiesRouter.post('/', auth, async (req, res) => {
     try {
         // Les donnees envoyees par le client (le Body dans Postman) sont dans req.body
         // On en sort les 3 valeurs d'un coup (destructuration)
@@ -332,6 +349,8 @@ activitiesRouter.post('/', async (req, res) => {
  *               - name
  *               - startDate
  *               - duration
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: L activite a bien ete modifiee.
@@ -349,10 +368,12 @@ activitiesRouter.post('/', async (req, res) => {
  *         description: Identifiant incorrect, champ vide, ou duree superieure ou egale a 144.
  *       404:
  *         description: Aucune activite ne porte cet identifiant.
+ *       401:
+ *         description: Token absent, invalide ou expire.
  *       500:
  *         description: Erreur interne du serveur ou de la base de donnees.
  */
-activitiesRouter.put('/:id', async (req, res) => {
+activitiesRouter.put('/:id', auth, async (req, res) => {
     try {
         // L'id de l'activite a modifier vient de l'URL.
         // Meme verification de l'id que pour le GET d'une activite.
@@ -419,6 +440,8 @@ activitiesRouter.put('/:id', async (req, res) => {
  *           type: integer
  *         description: Identifiant de l activite a supprimer.
  *         example: 12
+ *     security:
+ *       - bearerAuth: []
  *     responses:
  *       200:
  *         description: L activite a bien ete supprimee.
@@ -434,10 +457,12 @@ activitiesRouter.put('/:id', async (req, res) => {
  *         description: L identifiant n est pas un nombre entier positif.
  *       404:
  *         description: Aucune activite ne porte cet identifiant.
+ *       401:
+ *         description: Token absent, invalide ou expire.
  *       500:
  *         description: Erreur interne du serveur ou de la base de donnees.
  */
-activitiesRouter.delete('/:id', async (req, res) => {
+activitiesRouter.delete('/:id', auth, async (req, res) => {
     try {
         // Pour supprimer, on a seulement besoin de l'id, qui vient de l'URL.
         // Meme verification de l'id que pour le GET d'une activite.
